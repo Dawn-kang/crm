@@ -1,0 +1,110 @@
+<!-- 客户构成分析 -->
+<div id="customerConstitute">
+<div>
+  <form class="form-inline">
+  <div class="form-group">
+	<select name="condition" id="form-control">
+		<option value="0" selected="selected">按等级</option>
+		<option value="1">按信用度</option>
+		<option value="2">按满意度</option>
+	</select>
+	
+  </div>
+  
+
+
+  <input class="btn btn-default search" type="button" value="查询">
+</form>
+</div>
+<div id="container">
+	
+</div>
+
+</div>
+<style>
+#customerConstitute{
+	width: 1140px;
+	overflow: hidden;
+}
+	.form-inline{
+		margin-top: 15px;
+		margin-left: 10px;
+		margin-bottom: 20px;
+	}
+	.search{
+		margin-left: 50px;
+	}
+	.table th,td{
+		text-align: center;
+	}
+	#add{
+		margin-left: 250px;
+	}
+	#toAdd{
+		margin-top: 50px;
+	}
+	#deleteModal{
+		margin-top: 100px;
+	}
+	#container{
+		border: 1px solid #ccc;
+		min-height:430px;
+		width: 97%;
+		margin: 10px;
+		box-shadow: 10px 10px 5px #ccc;
+	}
+</style>
+<script type="text/javascript">
+
+	$(function(){
+		$(".search").on("click",function(){
+			var condition = $("select[name=condition]").val();
+			var url = "/reportForm/getConstitute";
+			$.get(url,{condition:condition},function(data){
+				draw(data);
+			});
+		});
+	})
+	function draw(data){
+			var chart = Highcharts.chart('container', {
+	chart: {
+		type: 'column'
+	},
+	title: {
+		text: '客户构成分析'
+	},
+	subtitle: {
+		text: ''
+	},
+	xAxis: {
+		type: 'category'
+	},
+	yAxis: {
+		title: {
+			text: ''
+		}
+	},
+	legend: {
+		enabled: false
+	},
+	plotOptions: {
+		series: {
+			borderWidth: 0,
+			dataLabels: {
+				enabled: true,
+				format: '{point.y:.1f}%'
+			}
+		}
+	},
+	tooltip: {
+		headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+		pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+	},
+	series: [{
+		name: '客户数量',
+		colorByPoint: true,
+		data: data
+	}]
+});
+		}
+</script>
